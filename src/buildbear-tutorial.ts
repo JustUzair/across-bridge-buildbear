@@ -20,8 +20,7 @@ import { parseAbi } from "viem";
 dotenv.config(); // Load environment variables from .env file
 
 // ### RPC URL ###
-// let BASE_URL = `https://api.buildbear.io/{sandbox-id}/plugin/across/suggested-fees`; //https://app.across.to/api
-let BASE_URL = `https://app.across.to/api`; //
+let BASE_URL = `https://api.buildbear.io/{sandbox-id}/plugin/across`;
 
 // ### API Endpoints ###
 let GET_SUGGESTED_FEES = `/suggested-fees`;
@@ -34,7 +33,7 @@ let bridgeParams: BridgeParams = {
   outputToken: `0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619`, // WETH
   originChainId: 1,
   destinationChainId: 137,
-  amount: parseEther("0.001"),
+  amount: parseEther("0.00001"),
 };
 
 async function getSuggestedFees(): Promise<RelayQuoteData | undefined> {
@@ -68,17 +67,14 @@ async function getDepositStatus(
   depositId: number
 ): Promise<DepositStatusData | undefined> {
   try {
-    // let res = await axios.get(`${BASE_URL}${BRIDGE_STATUS}`, {
-    //   params: {
-    //     originChainId: bridgeParams.originChainId,
-    //     depositId,
-    //   },
-    // });
-    // let data: DepositStatusData = res.data;
-    console.log("===========Deposit Status===========");
-    console.log(`Fill Status : Fulfilled`);
-    console.log("====================================");
-    // return data;
+    let res = await axios.get(`${BASE_URL}${BRIDGE_STATUS}`, {
+      params: {
+        originChainId: bridgeParams.originChainId,
+        depositId,
+      },
+    });
+    let data: DepositStatusData = res.data;
+    return data;
   } catch (err) {
     // @ts-ignore
     console.error(err);
