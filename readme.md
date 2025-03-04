@@ -1,6 +1,18 @@
-# Installation & Executing the scripts
+# Explanation & Steps
+
+In this repo you can:
+
+- Setup Across Bridge on BuildBear Sandbox
+- Call the API route to get the deposit pool address & fees dynamically
+- Use the spoke pool (deposit pool) address and other params to initiate a cross-chain deposit
+- Track the status of asset bridging on the destination chain
+
+# Installation & Executing the script
+
+Clone the repository, install the required dependencie, and run the script
 
 ```bash
+git clone https://github.com/JustUzair/across-bridge-buildbear.git
 npm i
 npm start
 ```
@@ -52,6 +64,6 @@ Transaction sent! Tx Hash: 0x3f9b35a94eb434278d726a1033cdda0e9f7c87df841974704e5
 Deposit completed!
 Deposit ID: 1002201
 ===========Deposit Status===========
-Fill Status : Fulfilled
+Fill Status : filled
 ====================================
 ```

@@ -1,5 +1,3 @@
-// SCRIPT
-
 import axios from "axios";
 import {
   ethers,
@@ -14,12 +12,13 @@ import {
   RelayQuoteData,
   DepositStatusData,
 } from "../utils/type-def";
+import SpokePoolABI from "../utils/abi/SpokePoolAbi.json";
 import dotenv from "dotenv";
 import { parseAbi } from "viem";
 dotenv.config(); // Load environment variables from .env file
 
 // ### RPC URL ###
-let BASE_URL = `https://testnet.across.to/api`; //https://app.across.to/api
+let BASE_URL = `https://api.buildbear.io/{sandbox-id}/plugin/across`;
 
 // ### API Endpoints ###
 let GET_SUGGESTED_FEES = `/suggested-fees`;
@@ -28,14 +27,13 @@ let BRIDGE_STATUS = `/deposit/status`;
 // ### Constants ###
 
 let bridgeParams: BridgeParams = {
-  inputToken: `0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14`, // 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
-  outputToken: `0x52eF3d68BaB452a294342DC3e5f464d7f610f72E`, // 0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619
-  originChainId: 11155111, //1
-  destinationChainId: 80002, // 137
+  inputToken: `0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2`, // WETH
+  outputToken: `0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619`, // WETH
+  originChainId: 1,
+  destinationChainId: 137,
   amount: parseEther("0.00001"),
 };
 
-// {"originChainId":80002,"originToken":"0x52eF3d68BaB452a294342DC3e5f464d7f610f72E","destinationChainId":11155111,"destinationToken":"0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14","originTokenSymbol":"WETH","destinationTokenSymbol":"WETH","isNative":false},
 async function getSuggestedFees(): Promise<RelayQuoteData | undefined> {
   try {
     let res = await axios.get(`${BASE_URL}${GET_SUGGESTED_FEES}`, {
@@ -74,9 +72,6 @@ async function getDepositStatus(
       },
     });
     let data: DepositStatusData = res.data;
-    console.log("===========Deposit Status===========");
-    console.log(data.fillStatus);
-    console.log("====================================");
     return data;
   } catch (err) {
     // @ts-ignore
@@ -90,8 +85,9 @@ async function depositToSpokePool(bridgeQuote: RelayQuoteData) {
   const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
   const provider = new ethers.JsonRpcProvider(
-    "https://eth-sepolia.g.alchemy.com/v2/Mi_5YnTsstWeipxyNuHsR14bZ3TBwvzk"
-  ); // Change this to your desired network RPC
+    "https://rpc.buildbear.io/{SANDBOX-ID}"
+  );
+
   if (process.env.PRIVATE_KEY == undefined) {
     console.error(
       "🔴 Please provide a private key in the environment variable PRIVATE_KEY"
@@ -185,10 +181,6 @@ async function depositToSpokePool(bridgeQuote: RelayQuoteData) {
     await tx.wait();
     console.log("Deposit completed!");
     const receipt = await provider.getTransactionReceipt(tx.hash);
-
-    // const receipt = await provider.getTransactionReceipt(
-    //   "0xb47c02abe52f8579bd98edb311ef1e2835b4b5dec0c283a656a68cedf09ea1f2"
-    // );
 
     const depositIdHex = receipt?.logs[1].topics[2];
     if (!depositIdHex) {
