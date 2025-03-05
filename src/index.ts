@@ -28,10 +28,10 @@ let BRIDGE_STATUS = `/deposit/status`;
 
 let bridgeParams: BridgeParams = {
   inputToken: `0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2`, // WETH
-  outputToken: `0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619`, // WETH
+  outputToken: `0x4200000000000000000000000000000000000006`, // WETH
   originChainId: 1,
-  destinationChainId: 137,
-  amount: parseEther("0.00001"),
+  destinationChainId: 8453,
+  amount: parseEther("0.1"),
 };
 
 async function getSuggestedFees(): Promise<RelayQuoteData | undefined> {
@@ -145,7 +145,7 @@ async function depositToSpokePool(bridgeQuote: RelayQuoteData) {
   );
   console.log(`outputAmount`, formatUnits(outputAmount, 18));
   console.log("====================================");
-  const destinationChainId = bridgeParams.destinationChainId; // Polygon as an example
+  const destinationChainId = bridgeParams.destinationChainId; // Base as an example
   const quoteTimestamp = bridgeQuote.timestamp;
   // fillDeadline: A fill deadline of 5 hours. Can be up to
   // SpokePool.getCurrentTime() + SpokePool.fillDeadlineBuffer() seconds.
