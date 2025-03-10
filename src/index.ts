@@ -1,12 +1,5 @@
 import axios from "axios";
-import {
-  ethers,
-  parseEther,
-  BigNumberish,
-  AbiCoder,
-  formatUnits,
-} from "ethers";
-
+import { ethers, parseEther, formatUnits } from "ethers";
 import {
   BridgeParams,
   RelayQuoteData,
@@ -26,12 +19,13 @@ let BRIDGE_STATUS = `/deposit/status`;
 
 // ### Constants ###
 
+// AVAILABLE ROUTES : https://app.across.to/api/available-routes
 let bridgeParams: BridgeParams = {
   inputToken: `0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2`, // WETH
   outputToken: `0x4200000000000000000000000000000000000006`, // WETH
   originChainId: 1,
   destinationChainId: 8453,
-  amount: parseEther("0.1"),
+  amount: parseEther("0.0001"),
 };
 
 async function getSuggestedFees(): Promise<RelayQuoteData | undefined> {
