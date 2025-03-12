@@ -11,7 +11,7 @@ import { parseAbi } from "viem";
 dotenv.config(); // Load environment variables from .env file
 
 // ### RPC URL ###
-let BASE_URL = `https://api.buildbear.io/{sandbox-id}/plugin/across`;
+let BASE_URL = `https://api.buildbear.io/{from-sandbox-id}/plugin/across/{to-sandbox-id}`;
 
 // ### API Endpoints ###
 let GET_SUGGESTED_FEES = `/suggested-fees`;
@@ -19,12 +19,14 @@ let BRIDGE_STATUS = `/deposit/status`;
 
 // ### Constants ###
 
-// AVAILABLE ROUTES : https://app.across.to/api/available-routes
+// AVAILABLE ROUTES :
+// MAINNET : https://app.across.to/api/available-routes
+// TESTNET : https://testnet.across.to/api/available-routes
 let bridgeParams: BridgeParams = {
-  inputToken: `0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2`, // WETH
-  outputToken: `0x4200000000000000000000000000000000000006`, // WETH
-  originChainId: 1,
-  destinationChainId: 8453,
+  inputToken: `0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14`,
+  outputToken: `0x4200000000000000000000000000000000000006`,
+  originChainId: 11155111,
+  destinationChainId: 84532,
   amount: parseEther("0.0001"),
 };
 
@@ -66,6 +68,9 @@ async function getDepositStatus(
       },
     });
     let data: DepositStatusData = res.data;
+    console.log("===========Deposit Status===========");
+    console.log(data.fillStatus);
+    console.log("====================================");
     return data;
   } catch (err) {
     // @ts-ignore
@@ -79,7 +84,7 @@ async function depositToSpokePool(bridgeQuote: RelayQuoteData) {
   const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
   const provider = new ethers.JsonRpcProvider(
-    "https://rpc.buildbear.io/{SANDBOX-ID}"
+    "https://rpc.buildbear.io/{from-sandbox-id}"
   );
 
   if (process.env.PRIVATE_KEY == undefined) {
